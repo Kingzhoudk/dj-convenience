@@ -14,6 +14,20 @@ _terminal_format_hostname_short_path_no_space
 # ===========================================================================================
 source $dj_convenience_path/dj-cmds.bash
 
+# setup wallpaper
+file="wallpaper.desktop"
+cd ~/.config/autostart/
+sudo rm -rf $file
+touch $file
+echo '[Desktop Entry]' >> $file
+echo 'Type=Application' >> $file
+echo $dj_convenience_path"/dj-wallpaper.bash" >> $file
+echo 'Hidden=false' >> $file
+echo 'X-GNOME-Autostart-enabled=true' >> $file
+echo 'Name[en_US]=wallpaper' >> $file
+echo 'Name=wallpaper' >> $file
+echo 'Name=wallpaper' >> $file
+echo 'Comment=' >> $file
 
 # ===========================================================================================
 # alias ----------------------------------------------
@@ -75,4 +89,4 @@ export PKG_CONFIG_PATH=/opt/ros/melodic/lib/pkgconfig:~/yugong_ws/devel/lib/pkgc
 # Qt
 export PATH=~/Qt5.11.2/5.11.2/gcc_64/bin:$PATH
 
-ccc
+# ccc
