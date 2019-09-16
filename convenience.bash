@@ -13,7 +13,8 @@ _terminal_format_hostname_short_path_no_space
 
 # ===========================================================================================
 source $dj_convenience_path/dj-cmds.bash
-source $dj_convenience_path/dj-funcs.bash
+source $dj_convenience_path/funcs.bash
+source $dj_convenience_path/resized.bash
 
 # ===========================================================================================
 # set-up on DJ Convenience
