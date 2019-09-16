@@ -258,6 +258,7 @@ function resized()
     if [ $# -eq 0 ] ; then
         _resized_help
         return
+    fi
     if [ $1 = 'embedded' ] ; then
         _resize_embedded
         return

@@ -61,9 +61,9 @@ export ROS_IP=localhost
 
 # echo ${ubuntu_release_version}
 if [[ ${ubuntu_release_version} = *'18.04'* ]] ; then
-    source /opt/ros/melodic/setup.bash 
+    source /opt/ros/melodic/setup.bash
 elif  [[ ${ubuntu_release_version} = *'16.04'* ]] ; then
-    source /opt/ros/kinetic/setup.bash 
+    source /opt/ros/kinetic/setup.bash
 fi
 
 source ~/yugong_ws/devel/setup.bash
