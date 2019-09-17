@@ -112,7 +112,19 @@ function _dj_setup_i219_v()
 }
 
 # ===========================================================================================
-function dj {
+function _dj_setup_foxit_reader()
+{
+    current_folder=${PWD}
+    cd ~
+    # no way to get the latestversion?
+    wget http://cdn01.foxitsoftware.com/pub/foxit/reader/desktop/linux/2.x/2.4/en_us/FoxitReader.enu.setup.2.4.4.0911.x64.run.tar.gz
+    gzip -d FoxitReader.enu.setup.2.4.4.0911.x64.run.tar.gz
+    tar xvf FoxitReader.enu.setup.2.4.4.0911.x64.run.tar
+    sudo ./FoxitReader.enu.setup.*.run
+    cd $current_folder
+}
+# ===========================================================================================
+function dj() {
     # ------------------------------
     if [ $# -eq 0 ] ; then
         _dj_help
@@ -136,6 +148,11 @@ function dj {
             return
         fi
         # --------------------------
+        if [ $2 = 'foxit' ] ; then
+            _dj_setup_foxit_reader
+            return
+        fi
+        # --------------------------
         _dj_setup_help
         return
     fi
@@ -156,11 +173,12 @@ function _dj()
     # declare an associative array for options
     declare -A ACTIONS
 
-    ACTIONS[setup]+="computer eigen i219-v "
+    ACTIONS[setup]+="computer eigen i219-v foxit "
     ACTIONS[eigen]=" "
     ACTIONS[i219-v]="e1000e-3.4.2.1 e1000e-3.4.2.4 "
     ACTIONS[e1000e-3.4.2.1]=" "
     ACTIONS[e1000e-3.4.2.4]=" "
+    ACTIONS[foxit]=" "
 
     # --------------------------------------------------------
     local cur=${COMP_WORDS[COMP_CWORD]}

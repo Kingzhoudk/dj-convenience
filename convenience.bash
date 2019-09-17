@@ -26,7 +26,6 @@ alias ls="ls -l --color=always"
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
-alias cal="/usr/share/applications/gcalctool.desktop" #shortcuts/symbol links to /usr/share/applications/
 alias eixt="exit" 
 alias amke="make"
 alias maek="make"
@@ -36,7 +35,7 @@ alias maek="make"
 alias m="make"
 alias mc="make clean"
 alias mm="make clean && make && make"
-alias md="make clean && make release && make download" 
+alias md="make clean && make release && make download"
 alias mdd="make clean && make debug  && make download-debug"
 alias d="djfile"
 alias ccc="clear"
@@ -79,5 +78,6 @@ export PKG_CONFIG_PATH=/opt/ros/melodic/lib/pkgconfig:~/yugong_ws/devel/lib/pkgc
 #====================================================================
 # Qt
 export PATH=~/Qt5.11.2/5.11.2/gcc_64/bin:$PATH
+export  LD_LIBRARY_PATH=~/Qt5.11.2/5.11.2/gcc_64/lib:$LD_LIBRARY_PATH
 
 ccc
