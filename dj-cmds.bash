@@ -12,6 +12,8 @@ function _dj_help()
     echo " "
     echo " First level commands:"
     echo "   setup   - to install some software"
+    echo "   clone   - clone a repo from bitbucket (sky-Hawk)"
+    echo " "
     echo "   MORE IS COMMING"
     echo " "
     echo " All commands support tab completion"
@@ -123,8 +125,50 @@ function _dj_setup_foxit_reader()
     sudo ./FoxitReader.enu.setup.*.run
     cd $current_folder
 }
+
 # ===========================================================================================
-function dj() {
+function _dj_setup_pangolin()
+{
+    current_folder=${PWD}
+    # dependency installation
+    sudo apt-get install libglew-dev -y
+
+    # tools to install, use 
+    #   glxinfo | grep "OpenGL version"
+    # to see opengl version in Ubuntu
+    sudo apt-get install mesa-utils -y 
+
+    cd ~
+    git clone https://sky-Hawk@bitbucket.org/sky-Hawk/pangolin.git
+    cd pangolin
+    git checkout add-eigen3-include
+    git pull
+    mkdir build && cd build
+    cmake ..
+    make -j$(cat /proc/cpuinfo | grep processor | wc -l)
+    sudo make install
+    cd ~
+    _ask_to_remove_a_folder pangolin
+    echo " "
+    echo "libpangolin.so is in path: /usr/local/lib/"
+    echo "header files (i.e., pangolin/pangolin.h) are in path: /usr/local/include/"
+    echo " "
+    
+    cd $current_folder
+}
+
+# ===========================================================================================
+function _dj_clone()
+{
+    echo " "
+    echo "dj clone "$1" with bitbucket user name sky-Hawk"
+    echo " "
+    git clone https://sky-Hawk@bitbucket.org/sky-Hawk/$1.git
+}
+
+# ===========================================================================================
+function dj()
+{
     # ------------------------------
     if [ $# -eq 0 ] ; then
         _dj_help
@@ -153,7 +197,17 @@ function dj() {
             return
         fi
         # --------------------------
+        if [ $2 = 'pangolin' ] ; then
+            _dj_setup_pangolin
+            return
+        fi
+        # --------------------------
         _dj_setup_help
+        return
+    fi
+    # ------------------------------
+    if [ $1 = 'clone' ] ; then
+        _dj_clone $2 $3 $4 $5 $6 $7
         return
     fi
     _dj_help
@@ -168,17 +222,24 @@ function _dj()
     # All possible first values in command line
     local SERVICES=("
         setup
+        clone
     ")
 
     # declare an associative array for options
     declare -A ACTIONS
 
-    ACTIONS[setup]+="computer eigen i219-v foxit "
+    ACTIONS[setup]+="computer eigen i219-v foxit pangolin "
     ACTIONS[eigen]=" "
     ACTIONS[i219-v]="e1000e-3.4.2.1 e1000e-3.4.2.4 "
     ACTIONS[e1000e-3.4.2.1]=" "
     ACTIONS[e1000e-3.4.2.4]=" "
     ACTIONS[foxit]=" "
+    ACTIONS[pangolin]=" "
+    #---------------------------------------------------------
+    ACTIONS[clone]+="dj-convenience lib-stm32f4-v2 dj-lib-cpp "
+    ACTIONS[dj-convenience]=" "
+    ACTIONS[lib-stm32f4-v2]=" "
+    ACTIONS[dj-lib-cpp]=" "
 
     # --------------------------------------------------------
     local cur=${COMP_WORDS[COMP_CWORD]}
