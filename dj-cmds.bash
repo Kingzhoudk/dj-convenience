@@ -158,6 +158,29 @@ function _dj_setup_pangolin()
 }
 
 # ===========================================================================================
+function _dj_setup_yaml_cpp() {
+    cwd_before_running=$PWD
+
+    cd ~
+    dj clone yaml-cpp
+    cd yaml-cpp
+    rm -rf build/ && mkdir build
+    cd build && cmake -DYAML_BUILD_SHARED_LIBS=ON ..
+    make $(cat /proc/cpuinfo | grep processor | wc -l)
+    sudo make install
+    cd ~
+
+    echo " "
+    echo "libyaml-cpp.a is installed in /usr/local/lib/"
+    echo "header files are installed in /usr/local/include/yaml-cpp/"
+    echo " "
+
+    _ask_to_remove_a_folder ~/yaml-cpp/
+
+    cd ${cwd_before_running}
+}
+
+# ===========================================================================================
 function _dj_clone()
 {
     echo " "
@@ -202,6 +225,11 @@ function dj()
             return
         fi
         # --------------------------
+        if [ $2 = 'yaml-cpp' ] ; then
+            _dj_setup_yaml_cpp
+            return
+        fi
+        # --------------------------
         _dj_setup_help
         return
     fi
@@ -228,18 +256,20 @@ function _dj()
     # declare an associative array for options
     declare -A ACTIONS
 
-    ACTIONS[setup]+="computer eigen i219-v foxit pangolin "
+    ACTIONS[setup]+="computer eigen i219-v foxit pangolin yaml-cpp "
     ACTIONS[eigen]=" "
     ACTIONS[i219-v]="e1000e-3.4.2.1 e1000e-3.4.2.4 "
     ACTIONS[e1000e-3.4.2.1]=" "
     ACTIONS[e1000e-3.4.2.4]=" "
     ACTIONS[foxit]=" "
     ACTIONS[pangolin]=" "
+    ACTIONS[yaml-cpp]=" "
     #---------------------------------------------------------
-    ACTIONS[clone]+="dj-convenience lib-stm32f4-v2 dj-lib-cpp "
+    ACTIONS[clone]+="dj-convenience lib-stm32f4-v2 dj-lib-cpp eigen-demo "
     ACTIONS[dj-convenience]=" "
     ACTIONS[lib-stm32f4-v2]=" "
     ACTIONS[dj-lib-cpp]=" "
+    ACTIONS[eigen-demo]=" "
 
     # --------------------------------------------------------
     local cur=${COMP_WORDS[COMP_CWORD]}

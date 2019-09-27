@@ -7,8 +7,9 @@ ubuntu_release_version=$(lsb_release -a)
 
 # ===========================================================================================
 # dependency on Bito Convenience
-keyremap enable
-touchpad thinkpad disable
+# move the below to .bashrc directly, so others can still use dj-convenience package
+# keyremap enable
+# touchpad thinkpad disable
 _terminal_format_hostname_short_path_no_space
 
 # ===========================================================================================
@@ -65,7 +66,7 @@ fi
 source ~/yugong_ws/devel/setup.bash
 
 #====================================================================
-# export HOSTNAME
+export HOSTNAME
 # export ROS_HOME=~/.ros
 # export PATH=/opt/ros/melodic/bin:~/yugong_ws/devel/bin:~/bin:~/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # export PYTHONPATH=/opt/ros/melodic/lib/python2.7/dist-packages:/usr/lib/python2.7/dist-packages:~/yugong_ws/install/lib/python2.7/dist-packages:~/yugong_ws/devel/lib/python2.7/dist-packages
