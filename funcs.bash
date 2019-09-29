@@ -5,19 +5,10 @@
 function _wallpaper_setup()
 {
     current_folder=${PWD}
-    file="wallpaper.desktop"
+    file="wallpaper.bash.desktop"
     cd ~/.config/autostart/
     if [ ! -f $file ] ; then
-        touch $file
-        echo '[Desktop Entry]' >> $file
-        echo 'Type=Application' >> $file
-        echo $dj_convenience_path"/wallpaper.bash" >> $file
-        echo 'Hidden=false' >> $file
-        echo 'X-GNOME-Autostart-enabled=true' >> $file
-        echo 'Name[en_US]=wallpaper' >> $file
-        echo 'Name=wallpaper' >> $file
-        echo 'Name[en_US]=' >> $file
-        echo 'Comment=' >> $file
+        cp $dj_convenience_path/$file .
     fi
     cd $current_folder
 }
@@ -38,7 +29,6 @@ function _ask_to_remove_a_file()
         echo "Wrong answer! No file was removed!"
     fi
 }
-
 
 # ===========================================================================================
 function _ask_to_take_an_action()
