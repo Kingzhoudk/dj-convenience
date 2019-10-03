@@ -16,7 +16,7 @@ _keyremap_wallpaper_enable()
 # duplicated function from Bito Convenience
 _keyremap_wallpaper_disable()
 {
-    xmodmap ~/workspace/bito_convenience/keyremap_disable.txt
+    xmodmap $dj_convenience_path/keyremap_disable.txt
     echo " "
     echo "keyremap disabled"
     echo " "

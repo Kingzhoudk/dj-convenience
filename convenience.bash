@@ -6,16 +6,14 @@ dj_convenience_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 &&
 ubuntu_release_version=$(lsb_release -a)
 
 # ===========================================================================================
-# dependency on Bito Convenience
-# move the below to .bashrc directly, so others can still use dj-convenience package
-# keyremap enable
-# touchpad thinkpad disable
-_terminal_format_hostname_short_path_no_space
-
-# ===========================================================================================
 source $dj_convenience_path/dj-cmds.bash
 source $dj_convenience_path/funcs.bash
 source $dj_convenience_path/resized.bash
+source $dj_convenience_path/version-check.bash
+
+# ===========================================================================================
+# initial setup
+_terminal_format_hostname_short_path_no_space
 
 # ===========================================================================================
 # set-up on DJ Convenience

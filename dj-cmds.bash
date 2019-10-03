@@ -109,7 +109,7 @@ function _dj_setup_i219_v()
     cd ~
     _ask_to_remove_a_folder ~/$1
 
-    _ask_to_take_an_action "sudo reboot"
+    _ask_to_execute_cmd "sudo reboot"
 
     cd $current_folder
 }
@@ -167,7 +167,7 @@ function _dj_setup_yaml_cpp() {
     cd yaml-cpp
     rm -rf build/ && mkdir build
     cd build && cmake -DYAML_BUILD_SHARED_LIBS=ON ..
-    make $(cat /proc/cpuinfo | grep processor | wc -l)
+    make -j$(cat /proc/cpuinfo | grep processor | wc -l)
     sudo make install
     cd ~
 
@@ -203,16 +203,20 @@ function _dj_clone_bitbucket()
     git clone https://sky-Hawk@bitbucket.org/sky-Hawk/$1.git
 }
 
-
 # ===========================================================================================
 function _dj_clone_github()
 {
     echo " "
     echo "dj clone "$1" with github user name xxxx"
     echo " "
-    echo "TODO "
-    echo " "
-    # git clone https://sky-Hawk@bitbucket.org/sky-Hawk/$1.git
+    git clone https://dj-zhou@github.com/dj-zhou/$1.git
+}
+
+# ===========================================================================================
+# call function in workspace-check.bash
+function _dj_version_check()
+{
+    _version_check $1 $2 $3 $4
 }
 
 # ===========================================================================================
@@ -275,6 +279,11 @@ function dj()
         _dj_clone_help
         return
     fi
+    # ------------------------------
+    if [ $1 = 'version-check' ] ; then
+        _dj_version_check $2 $3 $4 $5
+        return
+    fi
     _dj_help
     # ------------------------------
 }
@@ -288,6 +297,7 @@ function _dj()
     local SERVICES=("
         setup
         clone
+        version-check
     ")
 
     # declare an associative array for options
@@ -304,13 +314,15 @@ function _dj()
     #---------------------------------------------------------
     ACTIONS[clone]="bitbucket github "
     #---------------------------------------------------------
-    ACTIONS[bitbucket]+="dj-convenience lib-stm32f4-v2 dj-lib-cpp eigen-demo "
+    ACTIONS[bitbucket]+="dj-convenience lib-stm32f4-v2 eigen-demo "
     ACTIONS[dj-convenience]=" "
     ACTIONS[lib-stm32f4-v2]=" "
     ACTIONS[dj-lib-cpp]=" "
     ACTIONS[eigen-demo]=" "
     #---------------------------------------------------------
-    ACTIONS[github]=" "
+    ACTIONS[github]="dj-lib-cpp "
+    #---------------------------------------------------------
+    ACTIONS[version-check]=" "
 
     # --------------------------------------------------------
     local cur=${COMP_WORDS[COMP_CWORD]}
