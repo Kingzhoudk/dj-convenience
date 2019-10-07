@@ -100,9 +100,7 @@ function _dj_setup_i219_v()
     cd ~
     
     # git clone https://sky-Hawk@bitbucket.org/sky-Hawk/$1.git
-    dj clone bitbucket $1
-    cd $1
-    tar zxf e1000e-*.tar.gz
+    dj clone github $1
     cd $1/src/
     sudo make install
 
@@ -160,7 +158,7 @@ function _dj_setup_yaml_cpp() {
     cwd_before_running=$PWD
 
     cd ~
-    dj clone bitbucket yaml-cpp
+    dj clone github yaml-cpp
     cd yaml-cpp
     rm -rf build/ && mkdir build
     cd build && cmake -DYAML_BUILD_SHARED_LIBS=ON ..
@@ -204,7 +202,7 @@ function _dj_clone_bitbucket()
 function _dj_clone_github()
 {
     echo " "
-    echo "dj clone "$1" with github user name xxxx"
+    echo "dj clone "$1" with github user name dj-zhou"
     echo " "
     git clone https://dj-zhou@github.com/dj-zhou/$1.git
 }
@@ -317,9 +315,16 @@ function _dj()
     ACTIONS[dj-lib-cpp]=" "
     ACTIONS[eigen-demo]=" "
     #---------------------------------------------------------
-    ACTIONS[github]="dj-lib-cpp "
-    #---------------------------------------------------------
+    ACTIONS[github]="dj-lib-cpp yaml-cpp pangolin-demo dj-convenience "
     ACTIONS[version-check]=" "
+    ACTIONS[yaml-cpp]=" "
+    ACTIONS[pangolin-demo]=" "
+    ACTIONS[dj-conveneince]=" "
+    #---------------------------------------------------------
+    ACTIONS[github]+=" e1000e-3.4.2.1 e1000e-3.4.2.4 "
+    ACTIONS[e1000e-3.4.2.1]=" "
+    ACTIONS[e1000e-3.4.2.4]=" "
+
 
     # --------------------------------------------------------
     local cur=${COMP_WORDS[COMP_CWORD]}

@@ -21,7 +21,7 @@ _wallpaper_setup
 
 # ===========================================================================================
 # alias ----------------------------------------------
-# alias ls="ls -l --color=always"
+alias ls="ls -l --color=always"
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
@@ -31,11 +31,11 @@ alias maek="make"
 alias mkae="make"
 alias amke="make"
 alias maek="make"
-# alias m="make"
-# alias mc="make clean"
+alias m="make"
+alias mc="make clean"
 alias mm="make clean && make && make"
-# alias md="make clean && make release && make download"
-# alias mdd="make clean && make debug  && make download-debug"
+alias md="make clean && make release && make download"
+alias mdd="make clean && make debug  && make download-debug"
 alias d="djfile"
 alias ccc="clear"
 alias geidt="gedit"

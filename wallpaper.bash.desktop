@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Exec=/home/iot02/workspace/dj-convenience/wallpaper.bash
+Exec=~/workspace/dj-convenience/wallpaper.bash
 Hidden=false
 NoDisplay=false
 X-GNOME-Autostart-enabled=true

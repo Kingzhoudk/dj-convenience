@@ -6,10 +6,22 @@ function _wallpaper_setup()
 {
     current_folder=${PWD}
     file="wallpaper.bash.desktop"
+    if [ ! -d ~/.config/autostart/ ] ; then
+        mkdir -p ~/.config/autostart/
+    fi
     cd ~/.config/autostart/
     if [ ! -f $file ] ; then
-        cp $dj_convenience_path/$file .
+        echo  '[Desktop Entry]' > $file
+        echo  'Type=Application' >> $file
+        echo  'Exec='$HOME'/workspace/dj-convenience/wallpaper.bash' >> $file
+        echo  'Hidden=false' >> $file
+        echo  'X-GNOME-Autostart-enabled=true' >> $file
+        echo  'Name[en_US]=wallpaper' >> $file
+        echo  'Name=wallpaper' >> $file
+        echo  'Comment[en_US]=' >> $file
+        echo  'Comment=' >> $file
     fi
+
     cd $current_folder
 }
 
@@ -42,15 +54,30 @@ function _ask_to_remove_a_folder()
 # ===========================================================================================
 function _ask_to_execute_cmd()
 {
-    gdialog --title 'Execute a Command (dj-convenience)' --yesno 'Do you want to execute command "'$1'"?' 9 50
-    if [ $? != 0 ] ; then
-        gdialog --infobox 'Command "'$1'" is not executed!' 9 50
-    else
+    echo "command: "$1
+    # gdialog --title 'Execute a Command (dj-convenience)' --yesno 'Do you want to execute command '${1}'?' 9 50
+    # if [ $? != 0 ] ; then
+    #     gdialog --infobox 'Command "'$1'" is not executed!' 9 50
+    # else
+    #     $1
+    #     gdialog --infobox 'Command "'$1'" is executed!' 9 50
+    # fi
+    # gdialog --clear
+
+    echo " "
+    echo 'Do you want to execute command "'${1}'"?'
+    echo " "
+    read answer
+    if [[ ($answer = 'n') || ($answer = 'N') || ($answer = 'NO') || ($answer = 'No') || ($answer = 'no') ]] ; then
+        echo 'Command "'$1'" is not executed!'
+    elif [[ ($answer = 'y') || ($answer = 'Y') || ($answer = 'YES') || ($answer = 'Yes') || ($answer = 'yes') ]] ; then
+        echo 'Command "'$1'" is going to be executed!'
         $1
-        gdialog --infobox 'Command "'$1'" is executed!' 9 50
+    else
+        echo "Wrong answer! No action was taken!"
     fi
-    gdialog --clear
 }
+
 
 # ===========================================================================================
 # a duplicated function from Bito Convenience
