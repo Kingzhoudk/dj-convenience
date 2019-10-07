@@ -27,7 +27,8 @@ function _version_check()
 
     package_width=30
     branch_width=40
-    tag_width=40
+    tag_width=35 # if len > 32, then use xxx for the last three charactors
+    status_width=10 # if current commit is ahead or behind the remote
 
     if [ $# = 0 ] ; then
         workspace_path=$(pwd)
@@ -47,6 +48,7 @@ function _version_check()
     $(_write_to_text_file_with_width "Source" 15 $OUTPUT_FILE)
     $(_write_to_text_file_with_width "Branch" $branch_width $OUTPUT_FILE)
     $(_write_to_text_file_with_width "Tag" $tag_width $OUTPUT_FILE)
+    $(_write_to_text_file_with_width "Status" $status_width $OUTPUT_FILE)
     $(_write_to_text_file_with_width "Commit" 14 $OUTPUT_FILE)
     $(_write_to_text_file_with_width "Commit Message" 50 $OUTPUT_FILE)
     echo -ne "\n" >> ${OUTPUT_FILE}
@@ -61,14 +63,6 @@ function _version_check()
             if [ -x "$path" ]; then
                 cd $workspace_path/$repo
                 # --------------------------------------------------------
-                # git_remove_v=$(git remote -v | grep fetch)
-                # if [[ $git_remove_v = *"bitbucket"* ]] ; then
-                #     git_source="BitBucket"
-                # elif [[ $git_remove_v = *"github"* ]] ; then
-                #     git_source="GitHub"
-                # else
-                #     git_source="----"
-                # fi
                 git_source=$(_version_check_git_source)
                 # --------------------------------------------------------
                 if [[ $git_source != "----" ]] ; then
@@ -86,11 +80,22 @@ function _version_check()
                     if [ $commit_str_len -gt 50 ] ; then
                         commit_str=${commit_str:0:50}"xxxxxx"
                     fi
+                    # --------------------------------------------------------
+                    # to see if current commit is ahead or behind the remote
+                    git_status=$(git status)
+                    if [[ $git_status = *"is ahead of"* ]] ; then
+                        git_status_str="ahead"
+                    elif [[ $git_status = *"is behind of"* ]] ; then
+                        git_status_str="behind"
+                    else
+                        git_status_str="    "
+                    fi
                 else
                     b_name="----"
                     t_name="----"
                     branch_commit_value="----------"
                     commit_str="----"
+                    git_status_str="----"
                 fi
                 # --------------------------------------------------------
                 $(_write_to_text_file_with_width "$date_time" 24 $OUTPUT_FILE)
@@ -98,6 +103,7 @@ function _version_check()
                 $(_write_to_text_file_with_width "$git_source" 15 $OUTPUT_FILE)
                 $(_write_to_text_file_with_width "$b_name" $branch_width $OUTPUT_FILE)
                 $(_write_to_text_file_with_width "$t_name" $tag_width $OUTPUT_FILE)
+                $(_write_to_text_file_with_width "$git_status_str" $status_width $OUTPUT_FILE)
                 $(_write_to_text_file_with_width "$branch_commit_value" 10 $OUTPUT_FILE)
                 $(_write_to_text_file_with_width "$commit_str" 50 $OUTPUT_FILE)
                 echo -ne "\n" >> ${OUTPUT_FILE}

@@ -132,13 +132,10 @@ function _dj_setup_pangolin()
 {
     current_folder=${PWD}
     # dependency installation
-    sudo apt-get install libglew-dev -y
-
-    # tools to install, use
-    #   glxinfo | grep "OpenGL version"
-    # to see opengl version in Ubuntu
-    sudo apt-get install mesa-utils -y
-
+    sudo apt-get install libglew-dev mesa-utils -y
+    sudo apt-get install libglm-dev -y # opengl related mathematics lib
+    # use command 'glxinfo | grep "OpenGL version" ' to see opengl version in Ubuntu
+    
     cd ~
     git clone https://sky-Hawk@bitbucket.org/sky-Hawk/pangolin.git
     cd pangolin
