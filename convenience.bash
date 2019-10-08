@@ -25,7 +25,7 @@ alias ls="ls -l --color=always"
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
-alias eixt="exit" 
+alias eixt="exit"
 alias amke="make"
 alias maek="make"
 alias mkae="make"

@@ -31,8 +31,24 @@ function _version_check()
     status_width=10 # if current commit is ahead or behind the remote
 
     if [ $# = 0 ] ; then
-        workspace_path=$(pwd)
+        target_path=$(pwd)
+    else
+        target_path="$1"
     fi
+    echo "target_path: "$target_path
+    
+    # check all folders target_path folder --------------------
+    if [[ ! -d $target_path ]] ; then
+        echo " "
+        echo "path wrong, return"
+        echo " "
+        return
+    fi
+    cd $target_path
+    workspace_path=$(pwd)
+    echo $workspace_path
+    # return
+
     CURRENT_DATE_TIME=`date +"%Y%m%d_%I%M%S"`
     OUTPUT_FILE="${HOME}/version_check_${HOSTNAME}_${CURRENT_DATE_TIME}.txt"
     echo -e '\c' > ${OUTPUT_FILE}
@@ -40,11 +56,15 @@ function _version_check()
     echo -ne "----- Tool      : Version Check ---------------------------------------------------------------------\n" >> ${OUTPUT_FILE}
     echo -ne "----- Command   : dj version-check <path> -----------------------------------------------------------\n" >> ${OUTPUT_FILE}
     echo -ne "----- Developer : Dingjiang Zhou --------------------------------------------------------------------\n" >> ${OUTPUT_FILE}
-    echo -ne "----- Date      : October 3rd, 2019 -----------------------------------------------------------------\n" >> ${OUTPUT_FILE}
+    echo -ne "----- Date      : October 8th, 2019 -----------------------------------------------------------------\n" >> ${OUTPUT_FILE}
     echo -ne "-----------------------------------------------------------------------------------------------------\n" >> ${OUTPUT_FILE}
+    echo -ne "\nWorking irectory  : "$workspace_path"\n" >> ${OUTPUT_FILE}
+    echo -ne "Computer Hostname : "$HOSTNAME"\n" >> ${OUTPUT_FILE}
+    echo -ne "Computer Username : "$USER"\n" >> ${OUTPUT_FILE}
+    echo -ne "Run time          : "$(date)"\n\n" >> ${OUTPUT_FILE}
 
-    $(_write_to_text_file_with_width "Date and Time" 24 $OUTPUT_FILE)
-    $(_write_to_text_file_with_width "Package or Repo" $package_width $OUTPUT_FILE)
+    $(_write_to_text_file_with_width "Commit Time" 24 $OUTPUT_FILE)
+    $(_write_to_text_file_with_width "Folder" $package_width $OUTPUT_FILE)
     $(_write_to_text_file_with_width "Source" 15 $OUTPUT_FILE)
     $(_write_to_text_file_with_width "Branch" $branch_width $OUTPUT_FILE)
     $(_write_to_text_file_with_width "Tag" $tag_width $OUTPUT_FILE)
@@ -52,9 +72,7 @@ function _version_check()
     $(_write_to_text_file_with_width "Commit" 14 $OUTPUT_FILE)
     $(_write_to_text_file_with_width "Commit Message" 50 $OUTPUT_FILE)
     echo -ne "\n" >> ${OUTPUT_FILE}
-
-    # check all folders workspace_path folder --------------------
-    cd $workspace_path/
+    
     for folder in $workspace_path/*; do
         if [[ -d $folder ]] ; then
             repo=`basename "$folder"`

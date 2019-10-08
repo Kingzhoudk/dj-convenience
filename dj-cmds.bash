@@ -12,7 +12,7 @@ function _dj_help()
     echo " "
     echo " First level commands:"
     echo "   setup   - to install some software"
-    echo "   clone   - clone a repo from bitbucket (sky-Hawk)"
+    echo "   clone   - clone a repo from bitbucket/github"
     echo " "
     echo "   MORE IS COMMING"
     echo " "
@@ -99,8 +99,7 @@ function _dj_setup_i219_v()
 
     cd ~
     
-    # git clone https://sky-Hawk@bitbucket.org/sky-Hawk/$1.git
-    dj clone github $1
+    git clone https://dj-zhou@github.com/dj-zhou/$1.git
     cd $1/src/
     sudo make install
 
@@ -117,7 +116,7 @@ function _dj_setup_foxit_reader()
 {
     current_folder=${PWD}
     cd ~
-    # no way to get the latestversion?
+    # no way to get the latest version?
     wget http://cdn01.foxitsoftware.com/pub/foxit/reader/desktop/linux/2.x/2.4/en_us/FoxitReader.enu.setup.2.4.4.0911.x64.run.tar.gz
     gzip -d FoxitReader.enu.setup.2.4.4.0911.x64.run.tar.gz
     tar xvf FoxitReader.enu.setup.2.4.4.0911.x64.run.tar
@@ -193,18 +192,18 @@ function _dj_clone_help()
 function _dj_clone_bitbucket()
 {
     echo " "
-    echo "dj clone "$1" with bitbucket user name sky-Hawk"
+    echo "dj clone "$1" with bitbucket username"$bitbucket_username
     echo " "
-    git clone https://sky-Hawk@bitbucket.org/sky-Hawk/$1.git
+    git clone https://$bitbucket_username@bitbucket.org/$bitbucket_username/$1.git
 }
 
 # ===========================================================================================
 function _dj_clone_github()
 {
     echo " "
-    echo "dj clone "$1" with github user name dj-zhou"
+    echo "dj clone "$1" with github username "$github_username
     echo " "
-    git clone https://dj-zhou@github.com/dj-zhou/$1.git
+    git clone https://$github_username@github.com/$github_username/$1.git
 }
 
 # ===========================================================================================
