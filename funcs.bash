@@ -30,7 +30,7 @@ function _ask_to_remove_a_file()
 {
     gdialog --title 'Remove a File (dj-convenience)' --yesno 'Do you want to remove file "'$1'"?' 9 50
     if [ $? != 0 ] ; then
-        gdialog --infobox 'File "'$1'" is not removed!' 9 50
+        gdialog --infobox 'File "'$1'" is NOT removed!' 9 50
     else
         rm $1
         gdialog --infobox 'File "'$1'" is removed!' 9 50
@@ -43,7 +43,7 @@ function _ask_to_remove_a_folder()
 {
     gdialog --title 'Remove a Folder (dj-convenience)' --yesno 'Do you want to remove folder "'$1'"?' 9 50
     if [ $? != 0 ] ; then
-        gdialog --infobox 'Folder "'$1'" is not removed!' 9 50
+        gdialog --infobox 'Folder "'$1'" is NOT removed!' 9 50
     else
         rm -rf $1
         gdialog --infobox 'Folder "'$1'" is removed!' 9 50
@@ -57,7 +57,7 @@ function _ask_to_execute_cmd()
     echo "command: "$1
     # gdialog --title 'Execute a Command (dj-convenience)' --yesno 'Do you want to execute command '${1}'?' 9 50
     # if [ $? != 0 ] ; then
-    #     gdialog --infobox 'Command "'$1'" is not executed!' 9 50
+    #     gdialog --infobox 'Command "'$1'" is NOT executed!' 9 50
     # else
     #     $1
     #     gdialog --infobox 'Command "'$1'" is executed!' 9 50
@@ -69,7 +69,7 @@ function _ask_to_execute_cmd()
     echo " "
     read answer
     if [[ ($answer = 'n') || ($answer = 'N') || ($answer = 'NO') || ($answer = 'No') || ($answer = 'no') ]] ; then
-        echo 'Command "'$1'" is not executed!'
+        echo 'Command "'$1'" is NOT executed!'
     elif [[ ($answer = 'y') || ($answer = 'Y') || ($answer = 'YES') || ($answer = 'Yes') || ($answer = 'yes') ]] ; then
         echo 'Command "'$1'" is going to be executed!'
         $1

@@ -203,7 +203,6 @@ function _dj_setup_pip()
     cd ${cwd_before_running}
 }
 
-
 # ===========================================================================================
 function _dj_setup_typora()
 {
@@ -213,6 +212,42 @@ function _dj_setup_typora()
     sudo apt-get update
     # install typora
     sudo apt-get install typora
+}
+
+# ===========================================================================================
+function _dj_setup_glfw3_gtest_glog()
+{
+    cwd_before_running=$PWD
+
+    echo " "
+    echo "  Install glfw3, gtest, glog ..."
+    echo " "
+    sleep 2
+    cd ~
+    
+    # glfw3
+    sudo apt-get -y install build-essential cmake git xorg-dev libglu1-mesa-dev -y
+    sudo rm -rf glfw3/
+    git clone https://dj-zhou@github.com/dj-zhou/glfw3.git
+    cd glfw3/
+    mkdir build && cd build/
+    cmake .. -DBUILD_SHARED_LIBS=ON
+    make -j$(cat /proc/cpuinfo | grep processor | wc -l)
+    sudo make install && sudo ldconfig
+    cd ~
+    _ask_to_remove_a_folder glfw3
+    
+    # gtest
+    sudo apt-get install libgtest-dev -y
+    cd /usr/src/gtest
+    sudo cmake CMakeLists.txt
+    sudo make
+    sudo cp *.a /usr/local/lib
+
+    # glog
+    sudo apt-get install libgoogle-glog-dev -y
+
+    cd ${cwd_before_running}
 }
 
 # ===========================================================================================
@@ -304,6 +339,11 @@ function dj()
             return
         fi
         # --------------------------
+        if [ $2 = 'glfw3-gtest-glog' ] ; then
+            _dj_setup_glfw3_gtest_glog
+            return
+        fi
+        # --------------------------
         _dj_setup_help
         return
     fi
@@ -348,7 +388,8 @@ function _dj()
     declare -A ACTIONS
 
     ACTIONS[setup]+="computer eigen i219-v foxit pangolin yaml-cpp "
-    ACTIONS[setup]+="pip typora "
+    ACTIONS[setup]+="pip typora glfw3-gtest-glog "
+    ACTIONS[computer]=" "
     ACTIONS[eigen]=" "
     ACTIONS[i219-v]="e1000e-3.4.2.1 e1000e-3.4.2.4 "
     ACTIONS[e1000e-3.4.2.1]=" "
@@ -358,6 +399,7 @@ function _dj()
     ACTIONS[yaml-cpp]=" "
     ACTIONS[pip]=" "
     ACTIONS[typora]=" "
+    ACTIONS[glfw3-gtest-glog]=" "
     #---------------------------------------------------------
     ACTIONS[clone]="bitbucket github "
     #---------------------------------------------------------
@@ -373,7 +415,8 @@ function _dj()
     ACTIONS[pangolin-demo]=" "
     ACTIONS[dj-conveneince]=" "
     #---------------------------------------------------------
-    ACTIONS[github]+="e1000e-3.4.2.1 e1000e-3.4.2.4 "
+    ACTIONS[github]+="pangolin e1000e-3.4.2.1 e1000e-3.4.2.4 "
+    ACTIONS[pangolin]=" "
     ACTIONS[e1000e-3.4.2.1]=" "
     ACTIONS[e1000e-3.4.2.4]=" "
 
