@@ -216,37 +216,6 @@ function _dj_setup_typora()
 }
 
 # ===========================================================================================
-function _dj_clone_help()
-{
-    _dj_help
-    echo "--------------------- dj clone ----------------------"
-    echo " Second level commands:"
-    echo "   bitbuket - to clone repo from bitbucket"
-    echo "   github   - to clone repo from github"
-    echo "   MORE IS COMMING"
-    echo "-----------------------------------------------------"
-    echo " "
-}
-
-# ===========================================================================================
-function _dj_clone_bitbucket()
-{
-    echo " "
-    echo "dj clone "$1" with bitbucket username"$bitbucket_username
-    echo " "
-    git clone https://$bitbucket_username@bitbucket.org/$bitbucket_username/$1.git
-}
-
-# ===========================================================================================
-function _dj_clone_github()
-{
-    echo " "
-    echo "dj clone "$1" with github username "$github_username
-    echo " "
-    git clone https://$github_username@github.com/$github_username/$1.git
-}
-
-# ===========================================================================================
 # call function in workspace-check.bash
 function _dj_version_check()
 {
@@ -340,7 +309,6 @@ function _dj()
     # All possible first values in command line
     local SERVICES=("
         setup
-        clone
         version-check
     ")
 
@@ -359,23 +327,24 @@ function _dj()
     ACTIONS[pip]=" "
     ACTIONS[typora]=" "
     #---------------------------------------------------------
-    ACTIONS[clone]="bitbucket github "
-    #---------------------------------------------------------
-    ACTIONS[bitbucket]+="dj-convenience lib-stm32f4-v2 eigen-demo "
-    ACTIONS[dj-convenience]=" "
-    ACTIONS[lib-stm32f4-v2]=" "
-    ACTIONS[dj-lib-cpp]=" "
-    ACTIONS[eigen-demo]=" "
-    #---------------------------------------------------------
-    ACTIONS[github]="dj-lib-cpp yaml-cpp pangolin-demo dj-convenience "
-    ACTIONS[version-check]=" "
-    ACTIONS[yaml-cpp]=" "
-    ACTIONS[pangolin-demo]=" "
-    ACTIONS[dj-conveneince]=" "
-    #---------------------------------------------------------
-    ACTIONS[github]+="e1000e-3.4.2.1 e1000e-3.4.2.4 "
-    ACTIONS[e1000e-3.4.2.1]=" "
-    ACTIONS[e1000e-3.4.2.4]=" "
+    # ACTIONS[clone]="bitbucket github "
+    # #---------------------------------------------------------
+    # ACTIONS[bitbucket]+="dj-convenience lib-stm32f4-v2 eigen-demo "
+    # ACTIONS[dj-convenience]=" "
+    # ACTIONS[lib-stm32f4-v2]=" "
+    # ACTIONS[dj-lib-cpp]=" "
+    # ACTIONS[eigen-demo]=" "
+    # #---------------------------------------------------------
+    # ACTIONS[github]="dj-lib-cpp yaml-cpp pangolin-demo dj-convenience "
+    # ACTIONS[version-check]=" "
+    # ACTIONS[yaml-cpp]=" "
+    # ACTIONS[pangolin-demo]=" "
+    # ACTIONS[dj-conveneince]=" "
+    # #---------------------------------------------------------
+    # ACTIONS[github]+="pangolin e1000e-3.4.2.1 e1000e-3.4.2.4 "
+    # ACTIONS[pangolin]=" "
+    # ACTIONS[e1000e-3.4.2.1]=" "
+    # ACTIONS[e1000e-3.4.2.4]=" "
 
 
     # --------------------------------------------------------
@@ -389,3 +358,5 @@ function _dj()
 
 # ===========================================================================================
 complete -F _dj dj
+source $dj_convenience_path/dj-clone-config.bash
+complete -F _dj_zhou_github dj

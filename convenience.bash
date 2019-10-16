@@ -6,6 +6,7 @@ dj_convenience_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 &&
 ubuntu_release_version=$(lsb_release -a)
 
 # ===========================================================================================
+source $dj_convenience_path/dj-clone.bash
 source $dj_convenience_path/dj-cmds.bash
 source $dj_convenience_path/funcs.bash
 source $dj_convenience_path/resized.bash
