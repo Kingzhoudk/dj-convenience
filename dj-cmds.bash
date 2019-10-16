@@ -31,6 +31,9 @@ function _dj_setup_help()
     echo "   eigen    - to install eigen library"
     echo "   i219-v   - to install Intel I219-V WiFi chipset"
     echo "              driver"
+    echo "   foxit    - the foxit PDF reader"
+    echo "   yaml-cpp - C++ based yaml file parser"
+    echo "   pip      - python software pip"
     echo "   MORE IS COMMING"
     echo "-----------------------------------------------------"
     echo " "
@@ -134,7 +137,7 @@ function _dj_setup_pangolin()
     # use command 'glxinfo | grep "OpenGL version" ' to see opengl version in Ubuntu
     
     cd ~
-    git clone https://sky-Hawk@bitbucket.org/sky-Hawk/pangolin.git
+    git clone https://dj-zhou@github.com/dj-zhou/pangolin.git
     cd pangolin
     git checkout add-eigen3-include
     git pull
@@ -153,7 +156,8 @@ function _dj_setup_pangolin()
 }
 
 # ===========================================================================================
-function _dj_setup_yaml_cpp() {
+function _dj_setup_yaml_cpp()
+{
     cwd_before_running=$PWD
 
     cd ~
@@ -173,6 +177,42 @@ function _dj_setup_yaml_cpp() {
     _ask_to_remove_a_folder ~/yaml-cpp/
 
     cd ${cwd_before_running}
+}
+
+# ===========================================================================================
+function _dj_setup_pip()
+{
+    cwd_before_running=$PWD
+    cd ~/
+
+    # method 1: from https://www.zhihu.com/question/56927648
+    # the webpage says it is for installing python3 (and pip)
+    # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+    # python get-pip.py --force-reinstall
+
+    # _ask_to_remove_a_file ~/get-pip.py
+
+    # to show pip installation
+    # pip show pip
+
+    # method 2:
+    sudo apt-get install python3-pip
+
+    # also need to install python-pip??
+    sudo apt-get install python-pip
+    cd ${cwd_before_running}
+}
+
+
+# ===========================================================================================
+function _dj_setup_typora()
+{
+    wget -qO - https://typora.io/linux/public-key.asc | sudo apt-key add -
+    # add Typora's repository
+    sudo add-apt-repository 'deb https://typora.io/linux ./'
+    sudo apt-get update
+    # install typora
+    sudo apt-get install typora
 }
 
 # ===========================================================================================
@@ -254,6 +294,16 @@ function dj()
             return
         fi
         # --------------------------
+        if [ $2 = 'pip' ] ; then
+            _dj_setup_pip
+            return
+        fi
+        # --------------------------
+        if [ $2 = 'typora' ] ; then
+            _dj_setup_typora
+            return
+        fi
+        # --------------------------
         _dj_setup_help
         return
     fi
@@ -298,6 +348,7 @@ function _dj()
     declare -A ACTIONS
 
     ACTIONS[setup]+="computer eigen i219-v foxit pangolin yaml-cpp "
+    ACTIONS[setup]+="pip typora "
     ACTIONS[eigen]=" "
     ACTIONS[i219-v]="e1000e-3.4.2.1 e1000e-3.4.2.4 "
     ACTIONS[e1000e-3.4.2.1]=" "
@@ -305,6 +356,8 @@ function _dj()
     ACTIONS[foxit]=" "
     ACTIONS[pangolin]=" "
     ACTIONS[yaml-cpp]=" "
+    ACTIONS[pip]=" "
+    ACTIONS[typora]=" "
     #---------------------------------------------------------
     ACTIONS[clone]="bitbucket github "
     #---------------------------------------------------------
@@ -320,7 +373,7 @@ function _dj()
     ACTIONS[pangolin-demo]=" "
     ACTIONS[dj-conveneince]=" "
     #---------------------------------------------------------
-    ACTIONS[github]+=" e1000e-3.4.2.1 e1000e-3.4.2.4 "
+    ACTIONS[github]+="e1000e-3.4.2.1 e1000e-3.4.2.4 "
     ACTIONS[e1000e-3.4.2.1]=" "
     ACTIONS[e1000e-3.4.2.4]=" "
 
