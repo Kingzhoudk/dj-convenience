@@ -208,23 +208,44 @@ function _dj_setup_pip()
 {
     cwd_before_running=$PWD
     cd ~/
-
-    # method 1: from https://www.zhihu.com/question/56927648
-    # the webpage says it is for installing python3 (and pip)
-    # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-    # python get-pip.py --force-reinstall
-
-    # _ask_to_remove_a_file ~/get-pip.py
-
-    # to show pip installation
-    # pip show pip
-
-    # method 2:
-    sudo apt-get install python3-pip
-
-    # also need to install python-pip??
-    sudo apt-get install python-pip
+    sudo apt-get install python3-pip -y
+    sudo apt-get install python-pip -y
+    # pip upgrade, only for python 2
+    sudo pip install --upgrade pip
     cd ${cwd_before_running}
+}
+
+# ===========================================================================================
+# this shadowsocks is from
+# https://medium.com/@mighil/how-to-install-shadowsocks-on-ubuntu-to-bypass-china-gfw-db6f79d1f7f9
+# however, it does not support aes-256-gcm encryption
+# the another tool is shadowsocks-qt5 (https://github.com/shadowsocks/shadowsocks-qt5)
+# however, I failed to install it.
+function _dj_setup_shadowsocks()
+{
+    cwd_before_running=$PWD
+    cd ~/
+    # if pip is installed:
+    sudo pip install shadowsocks
+    
+    # M2Crypto, the most complete python wrapper for OpenSSL featuring RSA, DSA, DH, EC,
+    # HMACs, mesage digests, symmetric ciphers (including AES).
+    sudo apt-get install python-m2crypto -y
+    sudo apt-get install build-essential -y
+
+    # libsodium
+    # installation: https://download.libsodium.org/doc/installation
+    git clone https://github.com/dj-zhou/libsodium-1.0.18.git
+    cd libsodium-1.0.18
+    ./autogen.sh
+    ./configure
+    make -j$(cat /proc/cpuinfo | grep processor | wc -l)
+    sudo make install
+    sudo ldconfig
+
+    _ask_to_remove_a_folder libsodium-1.0.18
+    cd ${cwd_before_running}
+
 }
 
 # ===========================================================================================
@@ -387,7 +408,7 @@ function _dj_clone_help()
 function _dj_clone_bitbucket()
 {
     echo " "
-    echo "dj clone "$1" with bitbucket username"$bitbucket_username
+    echo "dj clone "$1" with bitbucket username "$bitbucket_username
     echo " "
     git clone https://$bitbucket_username@bitbucket.org/$bitbucket_username/$1.git
 }
@@ -456,6 +477,11 @@ function dj()
         # --------------------------
         if [ $2 = 'pip' ] ; then
             _dj_setup_pip
+            return
+        fi
+        # --------------------------
+        if [ $2 = 'shadowsocks' ] ; then
+            _dj_setup_shadowsocks
             return
         fi
         # --------------------------
@@ -530,6 +556,7 @@ function _dj()
     ACTIONS[setup]+="computer eigen i219-v foxit pangolin yaml-cpp qt-5.11.2 "
     ACTIONS[setup]+="pip typora glfw3-gtest-glog opencv-4.0.0 opencv-2.4.13 "
     ACTIONS[setup]+=" opencv-4.1.1 "
+    ACTIONS[setup]+="shadowsocks "
     ACTIONS[computer]=" "
     ACTIONS[eigen]=" "
     ACTIONS[i219-v]="e1000e-3.4.2.1 e1000e-3.4.2.4 "
@@ -545,6 +572,7 @@ function _dj()
     ACTIONS[opencv-4.0.0]=" "
     ACTIONS[opencv-4.1.1]=" "
     ACTIONS[opencv-2.4.13]=" "
+    ACTIONS[shadowsocks]=" "
     #---------------------------------------------------------
     ACTIONS[clone]="bitbucket github "
     #---------------------------------------------------------

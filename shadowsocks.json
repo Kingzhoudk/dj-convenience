@@ -1,0 +1,9 @@
+// configuration from lei
+{
+    "server":"144.202.99.26",
+    "server_port":9001,
+    "local_port":1080,
+    "password":"1A2s3d4f@z",
+    "timeout":600,
+    "method":"aes-256-gcm"
+}
