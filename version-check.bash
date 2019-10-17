@@ -101,9 +101,9 @@ function _version_check()
                     # --------------------------------------------------------
                     # to see if current commit is ahead or behind the remote
                     git_status=$(git status)
-                    if [[ $git_status = *"is ahead of"* ]] ; then
+                    if [[ $git_status = *"is ahead"* ]] ; then
                         git_status_str="ahead"
-                    elif [[ $git_status = *"is behind of"* ]] ; then
+                    elif [[ $git_status = *"is behind"* ]] ; then
                         git_status_str="behind"
                     else
                         git_status_str="    "
