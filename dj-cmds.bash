@@ -180,6 +180,30 @@ function _dj_setup_yaml_cpp()
 }
 
 # ===========================================================================================
+function _dj_setup_qt_5_11_2()
+{
+    cwd_before_running=$PWD
+
+    echo "  "
+    echo "Install Qt 5.11.2" 
+    echo "  "
+    sleep 2
+
+    cd ~
+    filename="qt-opensource-linux-x64-5.11.2.run"
+    wget http://qt.mirror.constant.com/archive/qt/5.11/5.11.2/$filename
+    chmod +x $filename
+    ./$filename
+
+    _ask_to_remove_a_file $filename
+    
+    # install serialport module
+    sudo apt-get install libqt5serialport5-dev -y
+
+    cd ${cwd_before_running}
+}
+
+# ===========================================================================================
 function _dj_setup_pip()
 {
     cwd_before_running=$PWD
@@ -250,6 +274,102 @@ function _dj_setup_glfw3_gtest_glog()
     cd ${cwd_before_running}
 }
 
+
+# ===========================================================================================
+# note: under test in Ubuntu 18.04
+function _dj_setup_opencv_2_4_13()
+{
+    cwd_before_running=$PWD
+
+    echo " "
+    echo " Have you installed Qt? The openCV installation may need Qt"
+    echo " use the following command to install Qt 5.11.2"
+    echo " "
+    sleep 3
+
+    cd ~/
+    mkdir -p soft/
+    cd soft/
+    wget https://codeload.github.com/opencv/opencv/zip/2.4.13.6
+    mv 2.4.13.6 opencv-2.4.13.6.zip
+    unzip opencv-2.4.13.6.zip
+    cd opencv-2.4.13.6
+    mkdir build && cd build
+    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D WITH_V4L=ON -D WITH_QT=ON -D WITH_OPENGL=ON WITH_OPENCL=ON WITH_GDAL=ON WITH_IPP=ON BUILD_JASPER=ON BUILD_JPEG=ON BUILD_PNG=ON BUIILD_TIFF=ON WITH_OPENMP=ON ..
+    make -j$(cat /proc/cpuinfo | grep processor | wc -l) && sudo make install
+
+    _ask_to_remove_a_folder ~/opencv-2.4.13
+    _ask_to_remove_a_file ~/opencv-2.4.13.zip
+
+    cd ${cwd_before_running}
+    echo " "
+    echo " lib files *.so are installed in /usr/local/lib/"
+    echo " header files are installded in /usr/local/include/opencv2/"
+    echo " "
+}
+
+# ===========================================================================================
+# note: under test in Ubuntu 18.04
+function _dj_setup_opencv_4_0_0()
+{
+    cwd_before_running=$PWD
+
+    echo " "
+    echo " Have you installed Qt? The openCV installation may need Qt"
+    echo " use the following command to install Qt 5.11.2"
+    echo " "
+    sleep 3
+
+    cd ~/
+    mkdir -p soft/
+    cd soft/
+    wget https://codeload.github.com/opencv/opencv/zip/4.0.0
+    mv 4.0.0 opencv-4.0.0.zip
+    unzip opencv-4.0.0.zip
+    cd opencv-4.0.0
+    mkdir build && cd build
+    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D WITH_V4L=ON -D WITH_QT=ON -D WITH_OPENGL=ON WITH_OPENCL=ON WITH_GDAL=ON WITH_IPP=ON BUILD_JASPER=ON BUILD_JPEG=ON BUILD_PNG=ON BUIILD_TIFF=ON WITH_OPENMP=ON ..
+    make -j$(cat /proc/cpuinfo | grep processor | wc -l) && sudo make install
+
+    _ask_to_remove_a_folder ~/opencv-4.0.0
+    _ask_to_remove_a_file ~/opencv-4.0.0.zip
+    cd ${cwd_before_running}
+    echo " "
+    echo " lib files *.so are installed in /usr/local/lib/"
+    echo " header files are installded in /usr/local/include/opencv4/, in which there is another folder opencv2/"
+    echo " "
+}
+
+# ===========================================================================================
+function _dj_setup_opencv_4_1_1()
+{
+    cwd_before_running=$PWD
+
+    echo " "
+    echo " Have you installed Qt? The openCV installation may need Qt"
+    echo " use the following command to install Qt 5.11.2"
+    echo " "
+    sleep 3
+
+    cd ~/
+    mkdir -p soft/
+    cd soft/
+    wget https://codeload.github.com/opencv/opencv/zip/4.1.1
+    mv 4.1.1 opencv-4.1.1.zip
+    unzip opencv-4.1.1.zip
+    cd opencv-4.1.1
+    mkdir build && cd build
+    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D WITH_V4L=ON -D WITH_QT=ON -D WITH_OPENGL=ON WITH_OPENCL=ON WITH_GDAL=ON WITH_IPP=ON BUILD_JASPER=ON BUILD_JPEG=ON BUILD_PNG=ON BUIILD_TIFF=ON WITH_OPENMP=ON ..
+    make -j$(cat /proc/cpuinfo | grep processor | wc -l) && sudo make install
+
+    _ask_to_remove_a_folder ~/opencv-4.1.1
+    _ask_to_remove_a_file ~/opencv-4.1.1.zip
+    cd ${cwd_before_running}
+    echo " "
+    echo " lib files *.so are installed in /usr/local/lib/"
+    echo " header files are installded in /usr/local/include/opencv4/, in which there is another folder opencv2/"
+    echo " "
+}
 # ===========================================================================================
 function _dj_clone_help()
 {
@@ -329,6 +449,11 @@ function dj()
             return
         fi
         # --------------------------
+        if [ $2 = 'qt-5.11.2' ] ; then
+            _dj_setup_qt_5_11_2
+            return
+        fi
+        # --------------------------
         if [ $2 = 'pip' ] ; then
             _dj_setup_pip
             return
@@ -341,6 +466,21 @@ function dj()
         # --------------------------
         if [ $2 = 'glfw3-gtest-glog' ] ; then
             _dj_setup_glfw3_gtest_glog
+            return
+        fi
+        # --------------------------
+        if [ $2 = 'opencv-4.0.0' ] ; then
+            _dj_setup_opencv_4_0_0
+            return
+        fi
+        # --------------------------
+        if [ $2 = 'opencv-4.1.1' ] ; then
+            _dj_setup_opencv_4_1_1
+            return
+        fi
+        # --------------------------
+        if [ $2 = 'opencv-2.4.13' ] ; then
+            _dj_setup_opencv_2_4_13
             return
         fi
         # --------------------------
@@ -387,8 +527,9 @@ function _dj()
     # declare an associative array for options
     declare -A ACTIONS
 
-    ACTIONS[setup]+="computer eigen i219-v foxit pangolin yaml-cpp "
-    ACTIONS[setup]+="pip typora glfw3-gtest-glog "
+    ACTIONS[setup]+="computer eigen i219-v foxit pangolin yaml-cpp qt-5.11.2 "
+    ACTIONS[setup]+="pip typora glfw3-gtest-glog opencv-4.0.0 opencv-2.4.13 "
+    ACTIONS[setup]+=" opencv-4.1.1 "
     ACTIONS[computer]=" "
     ACTIONS[eigen]=" "
     ACTIONS[i219-v]="e1000e-3.4.2.1 e1000e-3.4.2.4 "
@@ -397,9 +538,13 @@ function _dj()
     ACTIONS[foxit]=" "
     ACTIONS[pangolin]=" "
     ACTIONS[yaml-cpp]=" "
+    ACTIONS[qt-5.11.2]=" "
     ACTIONS[pip]=" "
     ACTIONS[typora]=" "
     ACTIONS[glfw3-gtest-glog]=" "
+    ACTIONS[opencv-4.0.0]=" "
+    ACTIONS[opencv-4.1.1]=" "
+    ACTIONS[opencv-2.4.13]=" "
     #---------------------------------------------------------
     ACTIONS[clone]="bitbucket github "
     #---------------------------------------------------------

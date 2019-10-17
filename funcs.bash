@@ -78,7 +78,6 @@ function _ask_to_execute_cmd()
     fi
 }
 
-
 # ===========================================================================================
 # a duplicated function from Bito Convenience
 function _terminal_format_hostname_short_path_no_space() 
@@ -109,4 +108,41 @@ function _write_to_text_file_with_width()
     for ((c=1;c<=$width-$str_len+1;c++ )) ; do
         echo -ne " " >> $file
     done
+}
+
+# ===========================================================================================
+# duplicated function from Bito Convenience
+function _dj_keyremap_enable()
+{
+    xmodmap ~/workspace/bito_convenience/keyremap_enable.txt
+    echo " "
+    echo "keyremap enabled"
+    echo " "
+}
+
+# ===========================================================================================
+# duplicated function from Bito Convenience
+function _dj_keyremap_disable()
+{
+    xmodmap $dj_convenience_path/keyremap_disable.txt
+    echo " "
+    echo "keyremap disabled"
+    echo " "
+}
+
+# ===========================================================================================
+# duplicated function from Bito Convenience
+function _dj_touchpad_thinkpad_control()
+{
+    # xinput list | grep TouchPad
+    touchpad=$(xinput list | grep TouchPad | tr -dc '0-9')
+    # the number is not a constant number, for example it was 13, and it then 14 at some time
+    touchpadID=${touchpad:1:2}
+    xinput set-prop $touchpadID "Device Enabled" $1
+    # for my new P52 computer, it is "Touchpad" instead of "TouchPad"
+    # xinput list | grep Touchpad
+    touchpad=$(xinput list | grep Touchpad | tr -dc '0-9')
+    # the number is not a constant number, for example it was 13, and it then 14 at some time
+    touchpadID=${touchpad:1:2}
+    xinput set-prop $touchpadID "Device Enabled" $1
 }
