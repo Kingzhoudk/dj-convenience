@@ -85,7 +85,7 @@ function _dj_setup_eigen()
 {
     current_folder=${PWD}
 
-    sudo apt-get install libeigen3-dev
+    sudo apt-get install libeigen3-dev -y
     sudo updatedb
     # locate eigen3
     echo " "
@@ -136,7 +136,7 @@ function _dj_setup_pangolin()
     sudo apt-get install libglm-dev -y # opengl related mathematics lib
     # use command 'glxinfo | grep "OpenGL version" ' to see opengl version in Ubuntu
     
-    cd ~
+    cd ~ && mkdir -p soft/ &&  cd soft/
     git clone https://dj-zhou@github.com/dj-zhou/pangolin.git
     cd pangolin
     git checkout add-eigen3-include
@@ -145,7 +145,7 @@ function _dj_setup_pangolin()
     cmake ..
     make -j$(cat /proc/cpuinfo | grep processor | wc -l)
     sudo make install
-    cd ~
+
     _ask_to_remove_a_folder pangolin
     echo " "
     echo "libpangolin.so is in path: /usr/local/lib/"
@@ -160,21 +160,20 @@ function _dj_setup_yaml_cpp()
 {
     cwd_before_running=$PWD
 
-    cd ~
+    cd ~ && mkdir -p soft/ &&  cd soft/
     dj clone github yaml-cpp
     cd yaml-cpp
     rm -rf build/ && mkdir build
     cd build && cmake -DYAML_BUILD_SHARED_LIBS=ON ..
     make -j$(cat /proc/cpuinfo | grep processor | wc -l)
     sudo make install
-    cd ~
 
     echo " "
     echo "libyaml-cpp.a is installed in /usr/local/lib/"
     echo "header files are installed in /usr/local/include/yaml-cpp/"
     echo " "
 
-    _ask_to_remove_a_folder ~/yaml-cpp/
+    _ask_to_remove_a_folder yaml-cpp/
 
     cd ${cwd_before_running}
 }
@@ -189,7 +188,7 @@ function _dj_setup_qt_5_11_2()
     echo "  "
     sleep 2
 
-    cd ~
+    cd ~ && mkdir -p soft/ &&  cd soft/
     filename="qt-opensource-linux-x64-5.11.2.run"
     wget http://qt.mirror.constant.com/archive/qt/5.11/5.11.2/$filename
     chmod +x $filename
@@ -308,9 +307,7 @@ function _dj_setup_opencv_2_4_13()
     echo " "
     sleep 3
 
-    cd ~/
-    mkdir -p soft/
-    cd soft/
+    cd ~ && mkdir -p soft/ &&  cd soft/
     wget https://codeload.github.com/opencv/opencv/zip/2.4.13.6
     mv 2.4.13.6 opencv-2.4.13.6.zip
     unzip opencv-2.4.13.6.zip
@@ -319,14 +316,35 @@ function _dj_setup_opencv_2_4_13()
     cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D WITH_V4L=ON -D WITH_QT=ON -D WITH_OPENGL=ON WITH_OPENCL=ON WITH_GDAL=ON WITH_IPP=ON BUILD_JASPER=ON BUILD_JPEG=ON BUILD_PNG=ON BUIILD_TIFF=ON WITH_OPENMP=ON ..
     make -j$(cat /proc/cpuinfo | grep processor | wc -l) && sudo make install
 
-    _ask_to_remove_a_folder ~/opencv-2.4.13
-    _ask_to_remove_a_file ~/opencv-2.4.13.zip
+    _ask_to_remove_a_folder opencv-2.4.13
+    _ask_to_remove_a_file opencv-2.4.13.zip
 
     cd ${cwd_before_running}
     echo " "
     echo " lib files *.so are installed in /usr/local/lib/"
     echo " header files are installded in /usr/local/include/opencv2/"
     echo " "
+}
+
+# ===========================================================================================
+# https://www.linuxbabe.com/desktop-linux/how-to-install-chinese-wubi-input-method-on-debian-8-gnome-desktop
+function _dj_setup_wubi()
+{
+    cwd_before_running=$PWD
+
+    sudo apt-get install ibus ibus-table-wubi -y
+    echo " "
+    echo "Following the steps:"
+    echo " "
+    echo "  $ ibu-setup"
+    echo "  in the opened window: Input Method -> Add -> Chinese -> choose WuBi-Jidian-86-JiShuang"
+	echo "  (it may need reboot the computer if the WuBi input is not shown) "
+	echo "  $ im-config -n ibus (nothing will happen after ENTER)"
+	echo "  Add an Input Source to Gnome:"
+	echo "  Settings -> Keyboard -> Input Sources -> Others -> Chinese -> Chise (WuBi-Jidian-86-JiShuang-6.0) "
+    echo "  use Windows Key (or named Super Key) + Space to switch the two input methods"
+    echo " "
+    cd ${cwd_before_running}
 }
 
 # ===========================================================================================
@@ -341,9 +359,7 @@ function _dj_setup_opencv_4_0_0()
     echo " "
     sleep 3
 
-    cd ~/
-    mkdir -p soft/
-    cd soft/
+    cd ~ && mkdir -p soft/ &&  cd soft/
     wget https://codeload.github.com/opencv/opencv/zip/4.0.0
     mv 4.0.0 opencv-4.0.0.zip
     unzip opencv-4.0.0.zip
@@ -352,8 +368,9 @@ function _dj_setup_opencv_4_0_0()
     cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D WITH_V4L=ON -D WITH_QT=ON -D WITH_OPENGL=ON WITH_OPENCL=ON WITH_GDAL=ON WITH_IPP=ON BUILD_JASPER=ON BUILD_JPEG=ON BUILD_PNG=ON BUIILD_TIFF=ON WITH_OPENMP=ON ..
     make -j$(cat /proc/cpuinfo | grep processor | wc -l) && sudo make install
 
-    _ask_to_remove_a_folder ~/opencv-4.0.0
-    _ask_to_remove_a_file ~/opencv-4.0.0.zip
+    _ask_to_remove_a_folder pencv-4.0.0
+    _ask_to_remove_a_file opencv-4.0.0.zip
+
     cd ${cwd_before_running}
     echo " "
     echo " lib files *.so are installed in /usr/local/lib/"
@@ -362,6 +379,8 @@ function _dj_setup_opencv_4_0_0()
 }
 
 # ===========================================================================================
+# the installation is from the book, which has a github repo:
+# https://github.com/PacktPublishing/Learn-OpenCV-4-By-Building-Projects-Second-Edition
 function _dj_setup_opencv_4_1_1()
 {
     cwd_before_running=$PWD
@@ -372,19 +391,41 @@ function _dj_setup_opencv_4_1_1()
     echo " "
     sleep 3
 
-    cd ~/
-    mkdir -p soft/
-    cd soft/
-    wget https://codeload.github.com/opencv/opencv/zip/4.1.1
-    mv 4.1.1 opencv-4.1.1.zip
-    unzip opencv-4.1.1.zip
+    # install dependency:
+    sudo apt-get install -y libopencv-dev build-essential cmake libdc1394-22
+    sudo apt-get install -y libdc1394-22-dev libjpeg-dev libpng12-dev
+    sudo apt-get install -y libtiff5-dev libjasper-dev libavcodec-dev
+    sudo apt-get install -y libavformat-dev libswscale-dev libxine2-dev
+    sudo apt-get install -y libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev
+    sudo apt-get install -y libv4l-dev libtbb-dev libqt4-dev libmp3lame-dev
+    sudo apt-get install -y libopencore-amrnb-dev libopencore-amrwb-dev
+    sudo apt-get install -y libtheora-dev libvorbis-dev libxvidcore-dev
+    sudo apt-get install -y x264 v4l-utils
+
+    cd ~ && mkdir -p soft/ &&  cd soft/
+    wget "https://github.com/opencv/opencv/archive/4.1.1.tar.gz" -O opencv-4.1.1.tar.gz
+    wget "https://github.com/opencv/opencv_contrib/archive/4.1.1.tar.gz" -O opencv_contrib-4.1.1.tar.gz
+    tar -zxvf opencv-4.1.1.tar.gz
+    tar -zxvf opencv_contrib-4.1.1.tar.gz
     cd opencv-4.1.1
     mkdir build && cd build
-    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D WITH_V4L=ON -D WITH_QT=ON -D WITH_OPENGL=ON WITH_OPENCL=ON WITH_GDAL=ON WITH_IPP=ON BUILD_JASPER=ON BUILD_JPEG=ON BUILD_PNG=ON BUIILD_TIFF=ON WITH_OPENMP=ON ..
+    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D INSTALL_C_EXAMPLES=ON -D BUILD_EXAMPLES=ON -D OPENCV_EXTRA_MOUDLES_PATH=~/soft/opencv_contrib-4.1.1/modules ../
+
     make -j$(cat /proc/cpuinfo | grep processor | wc -l) && sudo make install
 
-    _ask_to_remove_a_folder ~/opencv-4.1.1
-    _ask_to_remove_a_file ~/opencv-4.1.1.zip
+    # the following is from the book, however, the opencv.pc file is for opencv 2.4.9
+    # sudo cp /usr/lib/x86_64-linux-gnu/pkgconfig/opencv.pc /usr/local/lib/pkgconfig/opencv4.pc
+    # example to compile code:
+    # cd /full/path/to/opencv-4.0.0/samples/cpp
+    # g++ -ggdb `pkg-config --cflags --libs opencv` opencv_version.cpp -o /tmp/opencv_version
+    # /tmp/opencv_version
+    
+    # example code can be seen from:
+    # https://github.com/dj-zhou/opencv4-demo/001-imread-imshow
+    
+    _ask_to_remove_a_folder opencv-4.1.1
+    _ask_to_remove_a_file opencv-4.1.1.zip
+
     cd ${cwd_before_running}
     echo " "
     echo " lib files *.so are installed in /usr/local/lib/"
@@ -510,6 +551,11 @@ function dj()
             return
         fi
         # --------------------------
+        if [ $2 = 'wubi' ] ; then
+            _dj_setup_wubi
+            return
+        fi
+        # --------------------------
         _dj_setup_help
         return
     fi
@@ -555,8 +601,7 @@ function _dj()
 
     ACTIONS[setup]+="computer eigen i219-v foxit pangolin yaml-cpp qt-5.11.2 "
     ACTIONS[setup]+="pip typora glfw3-gtest-glog opencv-4.0.0 opencv-2.4.13 "
-    ACTIONS[setup]+=" opencv-4.1.1 "
-    ACTIONS[setup]+="shadowsocks "
+    ACTIONS[setup]+="shadowsocks opencv-4.1.1 wubi "
     ACTIONS[computer]=" "
     ACTIONS[eigen]=" "
     ACTIONS[i219-v]="e1000e-3.4.2.1 e1000e-3.4.2.4 "
@@ -573,6 +618,7 @@ function _dj()
     ACTIONS[opencv-4.1.1]=" "
     ACTIONS[opencv-2.4.13]=" "
     ACTIONS[shadowsocks]=" "
+    ACTIONS[wubi]=" "
     #---------------------------------------------------------
     ACTIONS[clone]="bitbucket github "
     #---------------------------------------------------------
