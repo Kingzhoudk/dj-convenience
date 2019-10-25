@@ -336,7 +336,7 @@ function _dj_setup_wubi()
     echo " "
     echo "Following the steps:"
     echo " "
-    echo "  $ ibu-setup"
+    echo "  $ ibus-setup"
     echo "  in the opened window: Input Method -> Add -> Chinese -> choose WuBi-Jidian-86-JiShuang"
 	echo "  (it may need reboot the computer if the WuBi input is not shown) "
 	echo "  $ im-config -n ibus (nothing will happen after ENTER)"
@@ -344,6 +344,55 @@ function _dj_setup_wubi()
 	echo "  Settings -> Keyboard -> Input Sources -> Others -> Chinese -> Chise (WuBi-Jidian-86-JiShuang-6.0) "
     echo "  use Windows Key (or named Super Key) + Space to switch the two input methods"
     echo " "
+    cd ${cwd_before_running}
+}
+
+# ===========================================================================================
+function _dj_setup_vtk()
+{
+    echo "vtk installation"
+
+    cwd_before_running=$PWD
+
+
+    # vtk 6 ----------------
+    # sudo apt-get install vtk6 -y
+    # vtk6 is already the newest version (6.2.0+dfsg1-10build1+debian11.1+osrf1).
+
+    # vtk 8 ----------------
+    # reference: https://kezunlin.me/post/b901735e/
+    cd ~
+    if [[ ! -d soft ]] ; then
+        mkdir -p soft
+    fi
+    cd soft/
+
+    sudo apt-get install cmake-qt-gui -y
+
+    wget https://vtk.org/files/release/8.2/VTK-8.2.0.zip
+    unzip VTK-8.2.0.zip
+    wget https://vtk.org/files/release/8.2/VTKData-8.2.0.zip
+    unzip VTKData-8.2.0.zip
+    # note: the data will be unziped into VTK-8.2.0/.ExternalData/ folder
+
+    cd VTK-8.2.0 && sudo rm -r build/ && mkdir -p build && cd build
+    cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DVTK_RENDERING_BACKEND=OpenGL2 -DQT5_DIR=$HOME/Qt5.11.2/5.11.2/gcc_64/lib/cmake/Qt5 -DVTK_QT_VERSION=5 -DVTK_Group_Qt=ON ..
+    make -j$(cat /proc/cpuinfo | grep processor | wc -l) && sudo make install
+    # some warning:
+    # CMake Warning:
+    #     Manually-specified variables were not used by the project:
+
+    #     QT5_DIR
+    # however, the compilation seems have no problem
+
+    echo " "
+    echo " the installed library seems to be in /usr/local/lib folder"
+    echo " the installed header files seem to be in /usr/local/include/vtk-8.2/ folder"
+    echo " "
+
+    cd ~/soft/
+    _ask_to_remove_a_folder VTK-8.2.0
+    _ask_to_remove_a_file VTK-8.2.0.zip
     cd ${cwd_before_running}
 }
 
@@ -556,6 +605,11 @@ function dj()
             return
         fi
         # --------------------------
+        if [ $2 = 'vtk' ] ; then
+            _dj_setup_vtk
+            return
+        fi
+        # --------------------------
         _dj_setup_help
         return
     fi
@@ -599,9 +653,11 @@ function _dj()
     # declare an associative array for options
     declare -A ACTIONS
 
+    #---------------------------------------------------------
+    #---------------------------------------------------------
     ACTIONS[setup]+="computer eigen i219-v foxit pangolin yaml-cpp qt-5.11.2 "
     ACTIONS[setup]+="pip typora glfw3-gtest-glog opencv-4.0.0 opencv-2.4.13 "
-    ACTIONS[setup]+="shadowsocks opencv-4.1.1 wubi "
+    ACTIONS[setup]+="shadowsocks opencv-4.1.1 wubi vtk "
     ACTIONS[computer]=" "
     ACTIONS[eigen]=" "
     ACTIONS[i219-v]="e1000e-3.4.2.1 e1000e-3.4.2.4 "
@@ -619,26 +675,37 @@ function _dj()
     ACTIONS[opencv-2.4.13]=" "
     ACTIONS[shadowsocks]=" "
     ACTIONS[wubi]=" "
+    ACTIONS[vtk]=" "
+
+    #---------------------------------------------------------
     #---------------------------------------------------------
     ACTIONS[clone]="bitbucket github "
     #---------------------------------------------------------
-    ACTIONS[bitbucket]+="dj-convenience lib-stm32f4-v2 eigen-demo "
-    ACTIONS[dj-convenience]=" "
+    ACTIONS[bitbucket]+=" lib-stm32f4-v2 "
     ACTIONS[lib-stm32f4-v2]=" "
-    ACTIONS[dj-lib-cpp]=" "
-    ACTIONS[eigen-demo]=" "
     #---------------------------------------------------------
-    ACTIONS[github]="dj-lib-cpp yaml-cpp pangolin-demo dj-convenience "
-    ACTIONS[version-check]=" "
-    ACTIONS[yaml-cpp]=" "
-    ACTIONS[pangolin-demo]=" "
+    ACTIONS[github]="dj-convenience dj-tools python-demo learn-ml opencv4-demo "
+    ACTIONS[github]="e1000e-3.4.2.1 e1000e-3.4.2.4 vtk-demo libsodium-1.0.18 pangolin-demo"
+    ACTIONS[github]="learn-md dj-lib-cpp glfw3 pangolin yaml-cpp "
     ACTIONS[dj-conveneince]=" "
-    #---------------------------------------------------------
-    ACTIONS[github]+="pangolin e1000e-3.4.2.1 e1000e-3.4.2.4 "
-    ACTIONS[pangolin]=" "
+    ACTIONS[dj-tools]=" "
+    ACTIONS[python-demo]=" "
+    ACTIONS[learn-ml]=" "
+    ACTIONS[opencv4-demo]=" "
     ACTIONS[e1000e-3.4.2.1]=" "
     ACTIONS[e1000e-3.4.2.4]=" "
+    ACTIONS[vtk-demo]=" "
+    ACTIONS[libsodium-1.0.18]=" "
+    ACTIONS[pangolin-demo]=" "
+    ACTIONS[learn-md]=" "
+    ACTIONS[dj-lib-cpp]=" "
+    ACTIONS[glfw3]=" "
+    ACTIONS[pangolin]=" "
+    ACTIONS[yaml-cpp]=" "
 
+    #---------------------------------------------------------
+    #---------------------------------------------------------
+    ACTIONS[version-check]=" "
 
     # --------------------------------------------------------
     local cur=${COMP_WORDS[COMP_CWORD]}

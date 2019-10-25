@@ -49,8 +49,8 @@ function _version_check()
     echo $workspace_path
     # return
 
-    CURRENT_DATE_TIME=`date +"%Y%m%d_%I%M%S"`
-    OUTPUT_FILE="${HOME}/version_check_${HOSTNAME}_${CURRENT_DATE_TIME}.txt"
+    CURRENT_DATE_TIME=`date +"%Y%m%d-%I%M%S"`
+    OUTPUT_FILE="${HOME}/version-check-${HOSTNAME}-${CURRENT_DATE_TIME}.txt"
     echo -e '\c' > $OUTPUT_FILE
     echo -ne "-----------------------------------------------------------------------------------------------------\n" >> $OUTPUT_FILE
     echo -ne "----- Tool      : Version Check ---------------------------------------------------------------------\n" >> $OUTPUT_FILE
