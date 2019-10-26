@@ -11,8 +11,10 @@ function _dj_help()
     echo "-----------------------------------------------------"
     echo " "
     echo " First level commands:"
-    echo "   setup   - to install some software"
-    echo "   clone   - clone a repo from bitbucket/github"
+    echo "   setup        - to install some software"
+    echo "   clone        - clone a repo from bitbucket/github"
+    echo "   udev         - udev rule setup for usb devices"
+    echo "  version-check - check version of repos in a path "
     echo " "
     echo "   MORE IS COMMING"
     echo " "
@@ -294,9 +296,9 @@ function _dj_setup_glfw3_gtest_glog()
     cd ${cwd_before_running}
 }
 
-
 # ===========================================================================================
-# note: under test in Ubuntu 18.04
+# may not be a good way to install opencv
+# recommend to install opencv-4.1.1
 function _dj_setup_opencv_2_4_13()
 {
     cwd_before_running=$PWD
@@ -306,8 +308,13 @@ function _dj_setup_opencv_2_4_13()
     echo " use the following command to install Qt 5.11.2"
     echo " "
     sleep 3
+    
+    cd ~
+    if [[ ! -d soft ]] ; then
+        mkdir -p soft
+    fi
+    cd soft/
 
-    cd ~ && mkdir -p soft/ &&  cd soft/
     wget https://codeload.github.com/opencv/opencv/zip/2.4.13.6
     mv 2.4.13.6 opencv-2.4.13.6.zip
     unzip opencv-2.4.13.6.zip
@@ -324,6 +331,61 @@ function _dj_setup_opencv_2_4_13()
     echo " lib files *.so are installed in /usr/local/lib/"
     echo " header files are installded in /usr/local/include/opencv2/"
     echo " "
+}
+
+# ===========================================================================================
+# the installation is from the book, which has a github repo:
+# https://github.com/PacktPublishing/Learn-OpenCV-4-By-Building-Projects-Second-Edition
+# however, this is a bad reference
+function _dj_setup_opencv_4_1_1()
+{
+    cwd_before_running=$PWD
+
+    echo " "
+    echo " Have you installed Qt? The openCV installation may need Qt"
+    echo " use the following command to install Qt 5.11.2"
+    echo " "
+    sleep 3
+
+    # install dependency:
+    sudo apt-get install -y libopencv-dev build-essential cmake libdc1394-22
+    sudo apt-get install -y libdc1394-22-dev libjpeg-dev libpng12-dev
+    sudo apt-get install -y libtiff5-dev libjasper-dev libavcodec-dev
+    sudo apt-get install -y libavformat-dev libswscale-dev libxine2-dev
+    sudo apt-get install -y libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev
+    sudo apt-get install -y libv4l-dev libtbb-dev libqt4-dev libmp3lame-dev
+    sudo apt-get install -y libopencore-amrnb-dev libopencore-amrwb-dev
+    sudo apt-get install -y libtheora-dev libvorbis-dev libxvidcore-dev
+    sudo apt-get install -y x264 v4l-utils
+
+    cd ~
+    if [[ ! -d soft ]] ; then
+        mkdir -p soft
+    fi
+    cd soft/
+    # to check the existing files, and check its md5 checksum, if passed, no need to download the tar ball again
+    wget "https://github.com/opencv/opencv/archive/4.1.1.tar.gz" -O opencv-4.1.1.tar.gz
+    wget "https://github.com/opencv/opencv_contrib/archive/4.1.1.tar.gz" -O opencv_contrib-4.1.1.tar.gz
+    tar -zxvf opencv-4.1.1.tar.gz
+    tar -zxvf opencv_contrib-4.1.1.tar.gz
+    cd opencv-4.1.1
+    mkdir build && cd build
+    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D INSTALL_C_EXAMPLES=ON -D BUILD_EXAMPLES=ON -D OPENCV_EXTRA_MOUDLES_PATH=~/soft/opencv_contrib-4.1.1/modules ../
+
+    make -j$(cat /proc/cpuinfo | grep processor | wc -l) && sudo make install
+    
+    _ask_to_remove_a_folder opencv-4.1.1
+    _ask_to_remove_a_file   opencv-4.1.1.tar.gz
+    _ask_to_remove_a_folder opencv_contrib-4.1.1
+    _ask_to_remove_a_file   opencv_contrib-4.1.1.tar.gz
+
+    cd ${cwd_before_running}
+    echo " "
+    echo " lib files *.so are installed in /usr/local/lib/"
+    echo " header files are installded in /usr/local/include/opencv4/, in which there is another folder opencv2/"
+    echo " "
+    echo " example code or template project can be seen from:"
+    echo " https://github.com/dj-zhou/opencv4-demo/001-imread-imshow"
 }
 
 # ===========================================================================================
@@ -397,91 +459,6 @@ function _dj_setup_vtk()
 }
 
 # ===========================================================================================
-# note: under test in Ubuntu 18.04
-function _dj_setup_opencv_4_0_0()
-{
-    cwd_before_running=$PWD
-
-    echo " "
-    echo " Have you installed Qt? The openCV installation may need Qt"
-    echo " use the following command to install Qt 5.11.2"
-    echo " "
-    sleep 3
-
-    cd ~ && mkdir -p soft/ &&  cd soft/
-    wget https://codeload.github.com/opencv/opencv/zip/4.0.0
-    mv 4.0.0 opencv-4.0.0.zip
-    unzip opencv-4.0.0.zip
-    cd opencv-4.0.0
-    mkdir build && cd build
-    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D WITH_V4L=ON -D WITH_QT=ON -D WITH_OPENGL=ON WITH_OPENCL=ON WITH_GDAL=ON WITH_IPP=ON BUILD_JASPER=ON BUILD_JPEG=ON BUILD_PNG=ON BUIILD_TIFF=ON WITH_OPENMP=ON ..
-    make -j$(cat /proc/cpuinfo | grep processor | wc -l) && sudo make install
-
-    _ask_to_remove_a_folder pencv-4.0.0
-    _ask_to_remove_a_file opencv-4.0.0.zip
-
-    cd ${cwd_before_running}
-    echo " "
-    echo " lib files *.so are installed in /usr/local/lib/"
-    echo " header files are installded in /usr/local/include/opencv4/, in which there is another folder opencv2/"
-    echo " "
-}
-
-# ===========================================================================================
-# the installation is from the book, which has a github repo:
-# https://github.com/PacktPublishing/Learn-OpenCV-4-By-Building-Projects-Second-Edition
-function _dj_setup_opencv_4_1_1()
-{
-    cwd_before_running=$PWD
-
-    echo " "
-    echo " Have you installed Qt? The openCV installation may need Qt"
-    echo " use the following command to install Qt 5.11.2"
-    echo " "
-    sleep 3
-
-    # install dependency:
-    sudo apt-get install -y libopencv-dev build-essential cmake libdc1394-22
-    sudo apt-get install -y libdc1394-22-dev libjpeg-dev libpng12-dev
-    sudo apt-get install -y libtiff5-dev libjasper-dev libavcodec-dev
-    sudo apt-get install -y libavformat-dev libswscale-dev libxine2-dev
-    sudo apt-get install -y libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev
-    sudo apt-get install -y libv4l-dev libtbb-dev libqt4-dev libmp3lame-dev
-    sudo apt-get install -y libopencore-amrnb-dev libopencore-amrwb-dev
-    sudo apt-get install -y libtheora-dev libvorbis-dev libxvidcore-dev
-    sudo apt-get install -y x264 v4l-utils
-
-    cd ~ && mkdir -p soft/ &&  cd soft/
-    wget "https://github.com/opencv/opencv/archive/4.1.1.tar.gz" -O opencv-4.1.1.tar.gz
-    wget "https://github.com/opencv/opencv_contrib/archive/4.1.1.tar.gz" -O opencv_contrib-4.1.1.tar.gz
-    tar -zxvf opencv-4.1.1.tar.gz
-    tar -zxvf opencv_contrib-4.1.1.tar.gz
-    cd opencv-4.1.1
-    mkdir build && cd build
-    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D INSTALL_C_EXAMPLES=ON -D BUILD_EXAMPLES=ON -D OPENCV_EXTRA_MOUDLES_PATH=~/soft/opencv_contrib-4.1.1/modules ../
-
-    make -j$(cat /proc/cpuinfo | grep processor | wc -l) && sudo make install
-
-    # the following is from the book, however, the opencv.pc file is for opencv 2.4.9
-    # sudo cp /usr/lib/x86_64-linux-gnu/pkgconfig/opencv.pc /usr/local/lib/pkgconfig/opencv4.pc
-    # example to compile code:
-    # cd /full/path/to/opencv-4.0.0/samples/cpp
-    # g++ -ggdb `pkg-config --cflags --libs opencv` opencv_version.cpp -o /tmp/opencv_version
-    # /tmp/opencv_version
-    
-    # example code can be seen from:
-    # https://github.com/dj-zhou/opencv4-demo/001-imread-imshow
-    
-    _ask_to_remove_a_folder opencv-4.1.1
-    _ask_to_remove_a_file opencv-4.1.1.zip
-
-    cd ${cwd_before_running}
-    echo " "
-    echo " lib files *.so are installed in /usr/local/lib/"
-    echo " header files are installded in /usr/local/include/opencv4/, in which there is another folder opencv2/"
-    echo " "
-}
-# ===========================================================================================
 function _dj_clone_help()
 {
     _dj_help
@@ -517,6 +494,36 @@ function _dj_clone_github()
 function _dj_version_check()
 {
     _version_check $1 $2 $3 $4
+}
+
+# ===========================================================================================
+function _dj_udev_help()
+{
+    _dj_help
+    echo "--------------------- dj udev ----------------------"
+    echo " Second level commands:"
+    echo "   uvc-video-capture - to assign static device name to the UVC"
+    echo "                       video capture device"
+    echo "   MORE IS COMMING"
+    echo "-----------------------------------------------------"
+    echo " "
+}
+
+# ===========================================================================================
+function _dj_udev_uvc_video_capture()
+{
+    echo " "
+    echo " udev rule setup to /etc/udev/rule.d/"
+    echo " "
+    if [ $# -eq 0 ] ; then
+        _dj_udev_help
+        return
+    fi
+    if [ $1 = 'uvc-video-capture' ] ; then
+        sudo $dj_convenience_path/udev/uvc_video_capture_udev.sh
+        return
+    fi
+
 }
 
 # ===========================================================================================
@@ -585,18 +592,13 @@ function dj()
             return
         fi
         # --------------------------
-        if [ $2 = 'opencv-4.0.0' ] ; then
-            _dj_setup_opencv_4_0_0
+        if [ $2 = 'opencv-2.4.13' ] ; then
+            _dj_setup_opencv_2_4_13
             return
         fi
         # --------------------------
         if [ $2 = 'opencv-4.1.1' ] ; then
             _dj_setup_opencv_4_1_1
-            return
-        fi
-        # --------------------------
-        if [ $2 = 'opencv-2.4.13' ] ; then
-            _dj_setup_opencv_2_4_13
             return
         fi
         # --------------------------
@@ -634,6 +636,10 @@ function dj()
         _dj_version_check $2 $3 $4 $5
         return
     fi
+    if [ $1 = 'udev' ] ; then
+        _dj_udev_uvc_video_capture $2 $3 $4 $5
+        return
+    fi
     _dj_help
     # ------------------------------
 }
@@ -648,6 +654,8 @@ function _dj()
         setup
         clone
         version-check
+        udev
+        dingkun
     ")
 
     # declare an associative array for options
@@ -656,8 +664,8 @@ function _dj()
     #---------------------------------------------------------
     #---------------------------------------------------------
     ACTIONS[setup]+="computer eigen i219-v foxit pangolin yaml-cpp qt-5.11.2 "
-    ACTIONS[setup]+="pip typora glfw3-gtest-glog opencv-4.0.0 opencv-2.4.13 "
-    ACTIONS[setup]+="shadowsocks opencv-4.1.1 wubi vtk "
+    ACTIONS[setup]+="pip typora glfw3-gtest-glog opencv-2.4.13 opencv-4.1.1 "
+    ACTIONS[setup]+="shadowsocks wubi vtk "
     ACTIONS[computer]=" "
     ACTIONS[eigen]=" "
     ACTIONS[i219-v]="e1000e-3.4.2.1 e1000e-3.4.2.4 "
@@ -670,9 +678,8 @@ function _dj()
     ACTIONS[pip]=" "
     ACTIONS[typora]=" "
     ACTIONS[glfw3-gtest-glog]=" "
-    ACTIONS[opencv-4.0.0]=" "
-    ACTIONS[opencv-4.1.1]=" "
     ACTIONS[opencv-2.4.13]=" "
+    ACTIONS[opencv-4.1.1]=" "
     ACTIONS[shadowsocks]=" "
     ACTIONS[wubi]=" "
     ACTIONS[vtk]=" "
@@ -706,6 +713,13 @@ function _dj()
     #---------------------------------------------------------
     #---------------------------------------------------------
     ACTIONS[version-check]=" "
+    ACTIONS[udev]="uvc-video-capture "
+    ACTIONS[uvc-video-capture]=" "
+
+    ACTIONS[dingkun]="dingjiang hello world "
+    ACTIONS[dingjiang]=" "
+    ACTIONS[hello]=" "
+    ACTIONS[world]=" "
 
     # --------------------------------------------------------
     local cur=${COMP_WORDS[COMP_CWORD]}
